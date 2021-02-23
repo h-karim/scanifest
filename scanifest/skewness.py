@@ -5,6 +5,9 @@ import math as m
 def detect_skew_angle(image):
     height, width= image.shape
     edges = cv2.Canny(image, 50, 200)
+    cv2.imshow('edges', edges)
+    cv2.waitKey(0)
+    cv2.imwrite('edges.jpg', edges)
     lines = cv2.HoughLinesP(edges, rho=1, theta = np.pi/180, 
             threshold = 100, minLineLength=width/2, maxLineGap=10)
     angle = 0
@@ -22,6 +25,7 @@ def draw_lines(image, lines):
         cv2.line(image,(x1,y1),(x2,y2), (255,0,0))
     cv2.imshow('lines', image)
     cv2.waitKey(0)
+    cv2.imwrite('lines.jpg',image)
 def correct_skew(image, rho):
     height, width = image.shape[:2]
     center = (width/2, height/2)
@@ -29,9 +33,10 @@ def correct_skew(image, rho):
     rotated = cv2.warpAffine(image, M, (height, width))
     cv2.imshow('rotated', rotated)
     cv2.waitKey(0)
+    cv2.imwrite('rotated.jpg',rotated)
     return rotated
 
-i = cv2.imread('./data/m20.jpg', cv2.CV_8UC1)
+i = cv2.imread('./data/p16.jpg', cv2.CV_8UC1)
 img_not = cv2.bitwise_not(i)
 angle, lines = detect_skew_angle(img_not)
 draw_lines(img_not, lines)
