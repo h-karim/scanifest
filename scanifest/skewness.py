@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-import math as m
 
 def detect_skew_angle(image):
     height, width= image.shape
@@ -13,7 +12,7 @@ def detect_skew_angle(image):
     angle = 0
     for line in lines:
         x1, y1, x2, y2 = line[0]
-        angle += m.atan2( (y2 - y1), (x2 - x1))
+        angle += np.arctan2( (y2 - y1), (x2 - x1))
     print(angle)
     mean_ang = angle/(len(lines))
     print(mean_ang*180/np.pi)
