@@ -27,16 +27,23 @@ def detect_skew_angle(image):
     logging.debug(f'mean skewness angle: {mean_ang} rad')
     return (mean_ang*180/np.pi, lines)
 
-def draw_lines(image, lines, *args):
+def draw_lines(image, lines, destination = None):
+    """Draw lines over an image and save it.
+
+    Draws given lines over given image and optionally saves the image under a target name
+    Positional arguments:
+    image       -- the image to draw onto
+    lines       -- the lines to be drawn
+    destination -- (optional) the output file for the new image. Must end with valid image extension. 
+                    If not given image won't be saved.
+    """
     for line in lines:
         x1,y1,x2,y2 = line[0]
         cv.line(image,(x1,y1),(x2,y2), (255,0,0))
     cv.imshow('lines', image)
     cv.waitKey(0)
-    if args:
-        destination = args[0]
+    if destination is not None:
         logging.debug(f'writing hough lines to: hough_{destination}')
-        destination = args[0]
         cv.imwrite(('hough_'+destination) ,image)
 
 def correct_skew(image, rho, *args):
