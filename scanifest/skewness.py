@@ -1,6 +1,7 @@
 import cv2 as cv
 import numpy as np
 import logging 
+import os
 logger = logging.getLogger(__name__)
 
 def detect_skew_angle(image):
@@ -43,8 +44,10 @@ def draw_lines(image, lines, destination = None):
     cv.imshow('lines', image)
     cv.waitKey(0)
     if destination is not None:
-        logging.debug(f'writing hough lines to: hough_{destination}')
-        cv.imwrite(('hough_'+destination) ,image)
+        directory, name = os.path.split(destination)
+        output = directory + '/hough_' + name
+        logging.debug(f'writing hough lines to: {output}')
+        cv.imwrite(output, image)
 
 def correct_skew(image, rho, destination = None):
     """Rotate image around its center while preserving original dimensions
