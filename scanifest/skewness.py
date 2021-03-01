@@ -1,5 +1,7 @@
 import cv2 as cv
 import numpy as np
+import logging 
+logger = logging.getLogger(__name__)
 
 def detect_skew_angle(image):
     height, width = image.shape
@@ -13,19 +15,23 @@ def detect_skew_angle(image):
     for line in lines:
         x1, y1, x2, y2 = line[0]
         angle         += np.arctan2( (y2 - y1), (x2 - x1))
-    print(angle)
     mean_ang = angle/(len(lines))
-    print(mean_ang*180/np.pi)
+    logging.debug(f'mean skewness angle: {mean_ang} rad')
     return (mean_ang*180/np.pi, lines)
 
-def draw_lines(image, lines):
+def draw_lines(image, lines, *args):
     for line in lines:
         x1,y1,x2,y2 = line[0]
         cv.line(image,(x1,y1),(x2,y2), (255,0,0))
     cv.imshow('lines', image)
     cv.waitKey(0)
-    cv.imwrite('lines.jpg',image)
-def correct_skew(image, rho):
+    if args:
+        destination = args[0]
+        logging.debug(f'writing hough lines to: {destination}')
+        destination = args[0]
+        cv.imwrite(('hough_'+destination) ,image)
+
+def correct_skew(image, rho, *args):
     height, width = image.shape[:2]
     center        = (width/2, height/2)
     M             = cv.getRotationMatrix2D(center, rho, 1)
@@ -37,6 +43,9 @@ def correct_skew(image, rho):
     rotated       = cv.warpAffine(image, M, (new_width, new_height))
     cv.imshow('rotated', rotated)
     cv.waitKey(0)
-    cv.imwrite('rotated.jpg',rotated)
+    if args:
+        destination = args[0]
+        logging.debug(f'writing rotated image to: {destination}')
+        cv.imwrite(('rotated_'+destination),rotated)
     return rotated
 
