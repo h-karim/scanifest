@@ -4,6 +4,14 @@ import logging
 logger = logging.getLogger(__name__)
 
 def detect_skew_angle(image):
+    """Calculate mean skew angle and hough lines of edges
+    
+    Hough lines are determined after detecting the edges of the image using the Canny algorithm.
+    Angle is calculated by taking the mean of all the lines' angles with respect to the horizontal.
+    Positional argument:
+    image -- the image matrix
+    Return: A tuple containing the mean skew angle and the Hough lines;
+    """
     height, width = image.shape
     edges         = cv.Canny(image, 50, 200)
     cv.imshow('edges', edges)
