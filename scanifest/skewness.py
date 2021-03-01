@@ -46,7 +46,17 @@ def draw_lines(image, lines, destination = None):
         logging.debug(f'writing hough lines to: hough_{destination}')
         cv.imwrite(('hough_'+destination) ,image)
 
-def correct_skew(image, rho, *args):
+def correct_skew(image, rho, destination = None):
+    """Rotate image around its center while preserving original dimensions
+
+    Positional arguments:
+    image       -- The image matrix to be rotated
+    rho         -- Angle of rotation
+    destination -- (optional) the output file for the new image. Must end with valid image extension. 
+                    If not given image won't be saved.
+    return: 
+        The rotated image
+    """
     height, width = image.shape[:2]
     center        = (width/2, height/2)
     M             = cv.getRotationMatrix2D(center, rho, 1)
@@ -58,9 +68,8 @@ def correct_skew(image, rho, *args):
     rotated       = cv.warpAffine(image, M, (new_width, new_height))
     cv.imshow('rotated', rotated)
     cv.waitKey(0)
-    if args:
-        destination = args[0]
-        logging.debug(f'writing rotated image to: rotated_{destination}')
-        cv.imwrite(('rotated_'+destination),rotated)
+    if destination is not None:
+        logging.debug(f'writing rotated image to: {destination}')
+        cv.imwrite(destination, rotated)
     return rotated
 
