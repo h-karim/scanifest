@@ -27,7 +27,7 @@ def draw_lines(image, lines, *args):
     cv.waitKey(0)
     if args:
         destination = args[0]
-        logging.debug(f'writing hough lines to: {destination}')
+        logging.debug(f'writing hough lines to: hough_{destination}')
         destination = args[0]
         cv.imwrite(('hough_'+destination) ,image)
 
@@ -45,7 +45,7 @@ def correct_skew(image, rho, *args):
     cv.waitKey(0)
     if args:
         destination = args[0]
-        logging.debug(f'writing rotated image to: {destination}')
+        logging.debug(f'writing rotated image to: rotated_{destination}')
         cv.imwrite(('rotated_'+destination),rotated)
     return rotated
 
