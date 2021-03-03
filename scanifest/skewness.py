@@ -7,19 +7,15 @@ logger = logging.getLogger(__name__)
 def detect_skew_angle(image):
     """Calculate mean skew angle and hough lines of edges
     
-    Hough lines are determined after detecting the edges of the image using the Canny algorithm.
+    Hough lines are determined using the probabilistic version of the algorithm.
     Angle is calculated by taking the mean of all the lines' angles with respect to the horizontal.
     Positional argument:
     image -- the image matrix
     Return: A tuple containing the mean skew angle and the Hough lines;
     """
     height, width = image.shape
-    edges         = cv.Canny(image, 50, 200)
-    cv.imshow('edges', edges)
-    cv.waitKey(0)
-    cv.imwrite('edges.jpg', edges)
-    lines = cv.HoughLinesP(edges, rho=1, theta = np.pi/180, 
-            threshold = 100, minLineLength=width/2, maxLineGap=10)
+    lines = cv.HoughLinesP(image, rho=1, theta = np.pi/180, 
+            threshold = 100, minLineLength=width/4, maxLineGap=120)
     angle = 0
     for line in lines:
         x1, y1, x2, y2 = line[0]
@@ -49,12 +45,12 @@ def draw_lines(image, lines, destination = None):
         logging.debug(f'writing hough lines to: {output}')
         cv.imwrite(output, image)
 
-def correct_skew(image, rho, destination = None):
+def correct_skew(image, theta, destination = None):
     """Rotate image around its center while preserving original dimensions
 
     Positional arguments:
     image       -- The image matrix to be rotated
-    rho         -- Angle of rotation
+    theta       -- Angle of rotation
     destination -- (optional) the output file for the new image. Must end with valid image extension. 
                     If not given image won't be saved.
     return: 
@@ -62,7 +58,7 @@ def correct_skew(image, rho, destination = None):
     """
     height, width = image.shape[:2]
     center        = (width/2, height/2)
-    M             = cv.getRotationMatrix2D(center, rho, 1)
+    M             = cv.getRotationMatrix2D(center, theta, 1)
     cos, sin      = (np.abs(M[0,0]), np.abs(M[1,0]))
     new_width     = int(width*cos + height*sin)
     new_height    = int(height*cos + width*sin)

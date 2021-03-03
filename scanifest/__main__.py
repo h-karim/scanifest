@@ -18,11 +18,16 @@ i_path = args.image
 destination = args.output
 if not os.path.isfile(i_path):
     raise OSError('image file does not exist')
-img          = cv.imread(i_path, cv.CV_8UC1)
-img_not      = cv.bitwise_not(img)
-angle, lines = sk.detect_skew_angle(img_not)
+img          = cv.imread(i_path)
+gray         = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+bw_inv = cv.adaptiveThreshold(gray, 255, cv.ADAPTIVE_THRESH_MEAN_C, cv.THRESH_BINARY_INV, 11,2) 
+if args.debug:
+    cv.imshow('img',bw_inv)
+    cv.waitKey(0)
+    cv.imwrite(destination +'bw_inv.jpg', bw_inv)
+angle, lines = sk.detect_skew_angle(bw_inv)
 try:
-    sk.draw_lines(img_not, lines, destination)
+    sk.draw_lines(bw_inv, lines, destination)
     sk.correct_skew(img, angle, destination) 
 except cv.error as e:
     print(e)
