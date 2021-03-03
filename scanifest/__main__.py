@@ -24,7 +24,7 @@ bw_inv = cv.adaptiveThreshold(gray, 255, cv.ADAPTIVE_THRESH_MEAN_C, cv.THRESH_BI
 if args.debug:
     cv.imshow('img',bw_inv)
     cv.waitKey(0)
-    cv.imwrite(destination +'bw_inv.jpg', bw_inv)
+    cv.imwrite('bw_inv.jpg', bw_inv)
 angle, lines = sk.detect_skew_angle(bw_inv)
 try:
     sk.draw_lines(bw_inv, lines, destination)
